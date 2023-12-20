@@ -2,9 +2,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import { useState } from 'react'
 
 
 export default function Home() {
+
+const [file, setFile] = useState()
+
+console.log(file)
 
 async function callApi(inputText) {
   const response = await fetch("/api/getInfo", {
@@ -30,11 +35,19 @@ function handleSubmitText(event) {
   callApi(inputText)
 }
 
-function handleSubmitFile(event) {
+async function handleSubmitFile(event) {
   event.preventDefault()
-  const formElements = event.target.elements;
-  const fileUpload = formElements.fileUpload.files
-  console.log(fileUpload)
+  const formData = new FormData()
+  formData.set('file', file)
+
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData
+  })
+  const data = await response.json();
+  console.log(data)
+  const { name } = data;
+  console.log("OpenAI replied...", name)
 }
 
   return (
@@ -47,7 +60,7 @@ function handleSubmitFile(event) {
         <label htmlFor="inputText">Insert Text</label>
         <input type='text' name="inputText" id="inputText"></input>
         <label htmlFor='fileUpload'></label>
-        <input type="file" name='fileUpload' id='fileUpload'></input>
+        <input type="file" name='fileUpload' id='fileUpload' onChange={(event) => setFile(event.target.files[0])}></input>
         <button type='submit'>Submit</button>
       </form>
     </>
