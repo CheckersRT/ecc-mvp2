@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [file, setFile] = useState();
   const [text, setText] = useState("");
-  const [output, setOutput] = useState();
-  const [fileName, setFileName] = useState();
+  const [output, setOutput] = useState("");
+  const [fileName, setFileName] = useState("");
 
   async function callExtractText(fileName) {
+    if (fileName === "") return;
+
     try {
       const response = await fetch("/api/extractText", {
         method: "POST",
@@ -24,8 +26,9 @@ export default function Home() {
       const data = await response.json();
       console.log("data back from vision api: ", data);
       const { text } = data;
-      console.log("Google vision replied with: ", text);
-      setText(text);
+      // console.log("Google vision replied with: ", text);
+      // setText(text);
+      callGetInfo(text)
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -45,21 +48,21 @@ export default function Home() {
     });
 
     const data = await response.json();
-    console.log(data);
     const { output } = data;
     console.log("OpenAI replied...", output);
     setOutput(output)
   }
 
-  // function handleSubmit() {
-  //   callExtractText();
-  // }
+  function handleSubmit() {
+    // callExtractText("hello");
+  }
+
+  // useEffect(() => {
+  //   setText(() => callExtractText(fileName));
+  // }, [fileName]);
 
   useEffect(() => {
-    callExtractText(fileName);
-  }, [fileName]);
-
-  useEffect(() => {
+    // callExtractText(fileName)
     callGetInfo(text);
   }, [text]);
 
@@ -67,7 +70,7 @@ export default function Home() {
     event.preventDefault();
     const formElements = event.target.elements;
     const inputText = formElements.inputText.value;
-    console.log(inputText);
+    // console.log(inputText);
     callGetInfo(inputText);
   }
 
@@ -90,8 +93,8 @@ export default function Home() {
     <>
       <h1>Get Info From Text</h1>
       <form
-      onSubmit={() => setFileName("hdllo")}
-      // onSubmit={handleSubmitText}
+      // onSubmit={() => setFileName("hdllo")}
+      onSubmit={handleSubmit}
       >
         <label htmlFor="inputText">Insert Text</label>
         <input type="text" name="inputText" id="inputText"></input>

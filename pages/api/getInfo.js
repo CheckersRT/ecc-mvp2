@@ -10,7 +10,7 @@ const openai = new OpenAI({
 });
 
 export default async function getInfo(req, res) {
-  console.log("Request body: ", req.body);
+  // console.log("Request body: ", req.body);
 
   const { text } = req.body;
 

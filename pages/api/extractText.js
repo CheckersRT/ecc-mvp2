@@ -21,7 +21,7 @@ export default async function extractText(req, res) {
           extractedText.push(word.description);
         });
         extractedString = extractedText.toString();
-        console.log("Extracted text from API: ", extractedString);
+        // console.log("Extracted text from API: ", extractedString);
 
         res.status(200).json({ "text": extractedString})
     
